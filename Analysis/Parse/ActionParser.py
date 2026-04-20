@@ -75,6 +75,7 @@ class Action:
         workflow.concurrency = raw_data.get('concurrency', None)
         workflow.permissions = raw_data.get('permissions', None)
         workflow.defaults = raw_data.get('defaults', {})
+        workflow.raw = raw_data
 
         return workflow
 
@@ -89,6 +90,7 @@ class Action:
         job.steps = [self.populate_step(step_data) for step_data in job_data.get('steps', [])
                      if isinstance(step_data, (dict, str))]
         job.env = job_data.get('env', {})
+        job.environment = job_data.get('environment', None)
         job._if = job_data.get('if', None)
         job.concurrency = job_data.get('concurrency', None)
         job.container = job_data.get('container', None)
@@ -100,9 +102,10 @@ class Action:
         job.strategy = job_data.get('strategy', {})
         job.secrets = job_data.get('secrets', {})
         job.timeout_minutes = job_data.get('timeout-minutes', None)
-        job.needs = job_data.get('needs', [])
+        job.needs = self.normalize_needs(job_data.get('needs', []))
         job.uses = job_data.get('uses', None)
         job.with_params = job_data.get('with', {})
+        job.raw = job_data
 
         return job
 
@@ -123,10 +126,23 @@ class Action:
             step.continue_on_error = step_data.get('continue-on-error', None)
             step.timeout_minutes = step_data.get('timeout-minutes', None)
             step.with_params = step_data.get('with', {})
+            step.raw = step_data
 
         elif isinstance(step_data, str):
             step.run = step_data
+            step.raw = {"run": step_data}
         else:
             step = None
 
         return step
+
+    @staticmethod
+    def normalize_needs(needs):
+        """
+        Normalize GitHub Actions 'needs' to a list.
+        """
+        if not needs:
+            return []
+        if isinstance(needs, list):
+            return needs
+        return [needs]

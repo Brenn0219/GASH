@@ -1,5 +1,6 @@
 from Analysis.Smells.Categories.Quality.LongBlocks.LongBlockSt import MainLongBlockCheck
 from Analysis.Parse.ActionParser import Action
+from Utils.FindingUtils import normalize_findings
 
 
 class LongBlockFct:
@@ -19,5 +20,5 @@ class LongBlockFct:
         Detect long blocks in the workflow.
         """
 
-        self.findings = self.strategy.check(self.content)
+        self.findings = normalize_findings("LongBlock", self.strategy.check(self.content))
         return self.findings

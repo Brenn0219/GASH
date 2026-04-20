@@ -1,4 +1,5 @@
 from Analysis.Smells.Categories.Maintenance.ErrorHandling.ErrorHandlingSt import MainErrorHandlingCheck
+from Utils.FindingUtils import normalize_findings
 
 
 class ErrorHandlingFct:
@@ -17,5 +18,5 @@ class ErrorHandlingFct:
         """
         Detects ErrorHandling smell in the provided workflow
         """
-        self.findings = self.strategy.check(self.content)
+        self.findings = normalize_findings("ErrorHandling", self.strategy.check(self.content))
         return self.findings

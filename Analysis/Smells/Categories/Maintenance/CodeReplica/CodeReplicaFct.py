@@ -1,4 +1,5 @@
 from Analysis.Smells.Categories.Maintenance.CodeReplica.CodeReplicaSt import MainCodeReplicaCheck
+from Utils.FindingUtils import normalize_findings
 
 
 class CodeReplicaFct:
@@ -17,5 +18,5 @@ class CodeReplicaFct:
         """
         Detects code replicas on the workflow.
         """
-        self.findings = self.strategy.check(self.content)
+        self.findings = normalize_findings("CodeReplica", self.strategy.check(self.content))
         return self.findings

@@ -29,6 +29,7 @@ class Step:
         self.timeout_minutes = None
         self.uses = None
         self.with_params = {}
+        self.raw = {}
 
     def __str__(self):
         return (f"Step :"
@@ -41,4 +42,5 @@ class Step:
                 f"Continue_on_Error = {self.continue_on_error},\n"
                 f"Timeout_Minutes = {self.timeout_minutes},\n"
                 f"Uses = {self.uses},\n"
-                f"With = {self.with_params}")
+                f"With = {self.with_params},\n"
+                f"Raw = {self.raw}")

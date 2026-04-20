@@ -1,4 +1,5 @@
 from Analysis.Smells.Categories.Security.UnsecureProtocol.UnsecureProtocolSt import MainUnsecureProtocolCheck
+from Utils.FindingUtils import normalize_findings
 
 
 class UnsecureProtocolFct:
@@ -13,5 +14,5 @@ class UnsecureProtocolFct:
         """
         Detects the unsecure protocol in the Action.
         """
-        self.findings = self.strategy.check(self.content)
+        self.findings = normalize_findings("UnsecureProtocol", self.strategy.check(self.content))
         return self.findings

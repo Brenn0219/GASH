@@ -20,6 +20,7 @@ class Workflow:
         self.concurrency = None
         self.permissions = {}
         self.defaults = {}
+        self.raw = {}
 
     def __str__(self):
         return (f"Workflow :"
@@ -29,4 +30,5 @@ class Workflow:
                 f"Env = {self.env},\n"
                 f"Concurrency = {self.concurrency},\n"
                 f"Permissions = {self.permissions},\n"
-                f"Defaults = {self.defaults}")
+                f"Defaults = {self.defaults},\n"
+                f"Raw = {self.raw}")

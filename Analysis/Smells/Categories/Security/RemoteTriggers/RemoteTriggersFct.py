@@ -1,4 +1,5 @@
 from Analysis.Smells.Categories.Security.RemoteTriggers.RemoteTriggersSt import MainRemoteRunCheck
+from Utils.FindingUtils import normalize_findings
 
 
 class RemoteRunFct:
@@ -16,6 +17,6 @@ class RemoteRunFct:
         """
         Detects Remote Run Triggers in the workflow.
         """
-        self.findings = self.strategy.check(self.content)
+        self.findings = normalize_findings("RemoteRun", self.strategy.check(self.content))
 
         return self.findings

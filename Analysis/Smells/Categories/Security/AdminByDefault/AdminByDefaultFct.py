@@ -1,4 +1,5 @@
 from Analysis.Smells.Categories.Security.AdminByDefault.AdminByDefaultSt import MainAdminByDefaultCheck
+from Utils.FindingUtils import normalize_findings
 
 
 class AdminByDefaultFct:
@@ -14,5 +15,5 @@ class AdminByDefaultFct:
         Detects elevate permissions on the workflow.
         """
 
-        self.findings = self.strategy.check(self.content)
+        self.findings = normalize_findings("AdminByDefault", self.strategy.check(self.content))
         return self.findings

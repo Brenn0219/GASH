@@ -1,5 +1,6 @@
 from Analysis.Smells.Categories.Security.UntrustedDependencies.UntrustedDependenciesSt import (
     MainUntrustedDependenciesCheck)
+from Utils.FindingUtils import normalize_findings
 
 
 class UntrustedDependenciesFct:
@@ -17,5 +18,5 @@ class UntrustedDependenciesFct:
         """
         Detects untrusted dependencies in the workflow.
         """
-        self.findings = self.strategy.check(self.content)
+        self.findings = normalize_findings("UntrustedDependencies", self.strategy.check(self.content))
         return self.findings

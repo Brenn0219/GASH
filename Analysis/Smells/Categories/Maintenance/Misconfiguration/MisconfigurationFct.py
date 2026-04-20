@@ -1,4 +1,5 @@
 from Analysis.Smells.Categories.Maintenance.Misconfiguration.MisconfigurationST import MainMisconfigurationCheck
+from Utils.FindingUtils import normalize_findings
 
 
 class MisconfigurationFct:
@@ -17,5 +18,5 @@ class MisconfigurationFct:
         """
         Detects misconfigurations in the workflow.
         """
-        self.findings = self.strategy.check(self.content)
+        self.findings = normalize_findings("Misconfiguration", self.strategy.check(self.content))
         return self.findings

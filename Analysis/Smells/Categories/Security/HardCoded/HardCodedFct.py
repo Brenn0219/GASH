@@ -1,4 +1,5 @@
 from Analysis.Smells.Categories.Security.HardCoded.HardCodedSt import MainHardCodedCheck
+from Utils.FindingUtils import normalize_findings
 
 
 class HardCodedFct:
@@ -14,5 +15,5 @@ class HardCodedFct:
         Detects hard-coded values in the Action..
         """
 
-        self.findings = self.strategy.check(self.content)
+        self.findings = normalize_findings("HardCoded", self.strategy.check(self.content))
         return self.findings

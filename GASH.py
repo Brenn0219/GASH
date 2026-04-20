@@ -2,7 +2,6 @@ import argparse
 import configparser
 import glob
 import readline
-import re
 import sys
 from os.path import abspath, dirname, expanduser, join
 from urllib.parse import urlparse
@@ -15,17 +14,24 @@ sys.path.append(d)
 from Analysis.Parse import ActionParser
 from Analysis.Smells.Categories.Maintenance.CodeReplica.CodeReplicaFct import CodeReplicaFct
 from Analysis.Smells.Categories.Maintenance.ErrorHandling.ErrorHandlingFct import ErrorHandlingFct
+from Analysis.Smells.Categories.Maintenance.ExtractEnvVars.ExtractEnvVarsFct import ExtractEnvVarsFct
+from Analysis.Smells.Categories.Maintenance.MatrixSimplification.MatrixSimplificationFct import MatrixSimplificationFct
 from Analysis.Smells.Categories.Maintenance.Misconfiguration.MisconfigurationFct import MisconfigurationFct
+from Analysis.Smells.Categories.Maintenance.ShellScripts.ShellScriptsFct import ShellScriptsFct
+from Analysis.Smells.Categories.Performance.Cache.CacheFct import CacheFct
+from Analysis.Smells.Categories.Performance.ParallelJobs.ParallelJobsFct import ParallelJobsFct
 from Analysis.Smells.Categories.Quality.LongBlocks.LongBlockFct import LongBlockFct
 from Analysis.Smells.Categories.Security.AdminByDefault.AdminByDefaultFct import AdminByDefaultFct
 from Analysis.Smells.Categories.Security.HardCoded.HardCodedFct import HardCodedFct
 from Analysis.Smells.Categories.Security.RemoteTriggers.RemoteTriggersFct import RemoteRunFct
+from Analysis.Smells.Categories.Security.SudoUsage.SudoUsageFct import SudoUsageFct
 from Analysis.Smells.Categories.Security.UnsecureProtocol.UnsecureProtocolFct import UnsecureProtocolFct
 from Analysis.Smells.Categories.Security.UntrustedDependencies.UntrustedDependenciesFct import UntrustedDependenciesFct
 
 from APIs import GitHub
 from Miner import Mining
 from Utils import Utilities
+from Utils.FindingUtils import format_finding, group_findings_by_category, normalize_findings
 
 # Define the path to the configuration file in the user's home directory
 CONFIG_DIR = join(expanduser("~"), ".gash")
@@ -69,14 +75,55 @@ class GASH:
         self.detectors = {
             'CodeReplica': CodeReplicaFct(workflow),
             'ErrorHandling': ErrorHandlingFct(workflow),
+            'ExtractEnvVars': ExtractEnvVarsFct(workflow),
+            'MatrixSimplification': MatrixSimplificationFct(workflow),
             'Misconfiguration': MisconfigurationFct(workflow),
+            'ShellScripts': ShellScriptsFct(workflow),
+            'Cache': CacheFct(workflow),
+            'ParallelJobs': ParallelJobsFct(workflow),
             'LongBlock': LongBlockFct(workflow),
             'AdminByDefault': AdminByDefaultFct(workflow),
             'HardCoded': HardCodedFct(workflow),
             'RemoteRun': RemoteRunFct(workflow),
+            'SudoUsage': SudoUsageFct(workflow),
             'UnsecureProtocol': UnsecureProtocolFct(workflow),
             'UntrustedDependencies': UntrustedDependenciesFct(workflow, token)
         }
+
+    def collect_detector_findings(self):
+        detector_findings = {}
+        for detector_name, detector in self.detectors.items():
+            findings = detector.detect()
+            detector_findings[detector_name] = normalize_findings(detector_name, findings)
+        return detector_findings
+
+    @staticmethod
+    def render_findings_report(write_line, detector_findings, file_path=None):
+        for detector_name, findings in detector_findings.items():
+            header = f"\nFindings for {detector_name}:"
+            if file_path is not None:
+                header = f"\nFindings for {detector_name} in {file_path}:"
+            write_line(header)
+
+            if findings:
+                for finding in findings:
+                    write_line(f"- {format_finding(finding)}")
+            else:
+                write_line("No findings detected.")
+
+        all_findings = []
+        for findings in detector_findings.values():
+            all_findings.extend(findings)
+
+        write_line("\nFindings by category:")
+        if not all_findings:
+            write_line("No findings detected.")
+            return
+
+        for category, findings in group_findings_by_category(all_findings):
+            write_line(f"Category {category}:")
+            for finding in findings:
+                write_line(f"- {format_finding(finding, include_detector=True)}")
 
     def main(self):
         parser = argparse.ArgumentParser(
@@ -254,16 +301,8 @@ class GASH:
             workflow = action.prepare_for_analysis()
 
             self.initialize_detectors(workflow, _token)
-
-            for detector_name, detector in self.detectors.items():
-                findings = detector.detect()
-                print(f"\nFindings for {detector_name}:")
-                if findings:
-                    for finding in findings:
-                        for line in re.split(r',\s*(?![^{}]*})', finding):
-                            print(f"- {line.strip()}")
-                else:
-                    print("No findings detected.")
+            detector_findings = self.collect_detector_findings()
+            self.render_findings_report(print, detector_findings)
 
         elif args.command == 'batch-analyze':
             _dir = args.dir
@@ -313,11 +352,13 @@ class GASH:
                                     break
 
                         if attempts < 3:
+                            detector_findings = {}
                             for detector_name, detector in self.detectors.items():
                                 detection_attempts = 0
                                 while detection_attempts < 5:
                                     try:
                                         findings = detector.detect()
+                                        detector_findings[detector_name] = normalize_findings(detector_name, findings)
                                         break
                                     except Exception as e:
                                         print(f"Error detecting with {detector_name}: {e}")
@@ -333,14 +374,13 @@ class GASH:
                                                 f"Failed to detect with {detector_name} after {detection_attempts} "
                                                 f"attempts.\n")
                                             findings = []
+                                            detector_findings[detector_name] = []
 
-                                log_file.write(f"\nFindings for {detector_name} in {file_path}:\n")
-                                if findings:
-                                    for finding in findings:
-                                        for line in re.split(r',\s*(?![^{}]*})', finding):
-                                            log_file.write(f"- {line.strip()}\n")
-                                else:
-                                    log_file.write("No findings detected.\n")
+                            self.render_findings_report(
+                                lambda line: log_file.write(f"{line}\n"),
+                                detector_findings,
+                                file_path=file_path,
+                            )
 
                     print(f"Analysis complete for {file_path}.\n"
                           f"Log written to {log_file_path}.\n\n")

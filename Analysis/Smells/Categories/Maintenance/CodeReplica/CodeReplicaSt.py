@@ -1,3 +1,6 @@
+from Utils.FindingUtils import build_finding
+
+
 class MainCodeReplicaCheck:
     """
     Strategy to check for replicated code snippets and variable values in GitHub Actions workflows.
@@ -47,14 +50,20 @@ class MainCodeReplicaCheck:
 
             for step in job.steps:
                 for key, value in step.env.items():
-                    self.add_to_counts(value, f"Step '{step.name}' env variable '{key}' in job '{job_name}' "
-                                              f"is replicated. Consider use Global Env variables: Ex: Env: '{key}': "
-                                              f"'{value}'")
+                    self.add_to_counts(value, f"Step '{step.name}' env variable '{key}' in job '{job_name}'")
 
                 for key, value in step.with_params.items():
-                    self.add_to_counts(value, f"Step '{step.name}' parameter '{key}' in job '{job_name}' "
-                                              f"is replicated. Consider use Defaults params. Ex: Defaults: '{key}': "
-                                              f"'{value}'")
+                    self.add_to_counts(value, f"Step '{step.name}' parameter '{key}' in job '{job_name}'")
+
+        for value, contexts in self.value_counts.items():
+            if len(contexts) < self.threshold:
+                continue
+            self.findings.append(
+                build_finding(
+                    "CodeReplica",
+                    f"Value '{value}' is duplicated across contexts: {', '.join(contexts)}.",
+                )
+            )
 
     def add_to_counts(self, value, context):
         """
@@ -68,11 +77,7 @@ class MainCodeReplicaCheck:
             self.value_counts[value] = []
         self.value_counts[value].append(context)
 
-        if len(self.value_counts[value]) == self.threshold:
-            contexts = ', '.join(self.value_counts[value])
-            self.findings.append(f"Value '{value}' is replicated in contexts: {contexts}. If not an Env consider use "
-                                 f"Matrix to define versions. Ex: 'strategy: matrix: {{'python': ['3.6', '3.7', "
-                                 f"'3.8']}}'")
+        return
 
     def check_duplicate_jobs(self, workflow):
         """
@@ -85,9 +90,14 @@ class MainCodeReplicaCheck:
         for job_name, job in workflow.jobs.items():
             job_signature = self.create_job_signature(job)
             if job_signature in job_signatures:
-                self.findings.append(f"Job '{job_name}' is replicated with job '{job_signatures[job_signature]}'. "
-                                     f"Consider use reusable actions. You can find examples in the documentation: "
-                                     f"https://docs.github.com/en/actions/using-workflows/reusing-workflows")
+                self.findings.append(
+                    build_finding(
+                        "CodeReplica",
+                        f"Job '{job_name}' is duplicated with job '{job_signatures[job_signature]}'. "
+                        f"Consider using reusable workflows or actions. You can find examples in the documentation: "
+                        f"https://docs.github.com/en/actions/using-workflows/reusing-workflows",
+                    )
+                )
             else:
                 job_signatures[job_signature] = job_name
 

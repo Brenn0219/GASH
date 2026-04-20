@@ -31,7 +31,7 @@ class Job:
         self.runs_on = None
         self.steps = []
         self.env = {}
-        self.environment = {}
+        self.environment = None
         self._if = None
         self.concurrency = None
         self.container = None
@@ -46,6 +46,7 @@ class Job:
         self.needs = []
         self.uses = None
         self.with_params = {}
+        self.raw = {}
 
     def __str__(self):
         return (f"Job :"
@@ -68,5 +69,5 @@ class Job:
                 f"Timeout_Minutes = {self.timeout_minutes},\n"
                 f"Needs = {self.needs},\n"
                 f"Uses = {self.uses},\n"
-                f"With = {self.with_params},"
-                f"Working_Directory = {self.working_directory}")
+                f"With = {self.with_params},\n"
+                f"Raw = {self.raw}")
