@@ -79,7 +79,12 @@ def test_hardcoded_classifies_secret_and_generic_findings():
     assert any("AWS_ACCESS_KEY_ID" in finding.message for finding in secret_findings)
     assert any("parameter 'token'" in finding.message for finding in secret_findings)
     assert any("TOKEN_NAME" in finding.message for finding in generic_findings)
-    assert all(finding.severity == "CRITICAL" and finding.category == "SECURITY" for finding in secret_findings)
+    assert all(
+        finding.severity == "CRITICAL"
+        and finding.category == "EF"
+        and finding.subcategory == "SECURITY"
+        for finding in secret_findings
+    )
     assert all(finding.severity == "LOW" and finding.category == "SMELL" for finding in generic_findings)
 
 
@@ -121,7 +126,9 @@ def test_legacy_findings_are_normalized_with_metadata():
     assert len(findings) == 1
     assert findings[0].message == "Missing cache step"
     assert findings[0].severity == "MEDIUM"
+    assert findings[0].level == "MEDIUM"
     assert findings[0].category == "EF"
+    assert findings[0].subcategory == "PERFORMANCE"
 
 
 def test_rendered_output_keeps_metadata_and_grouping():
@@ -131,10 +138,10 @@ def test_rendered_output_keeps_metadata_and_grouping():
     formatted = format_finding(secret_finding, include_detector=True)
     grouped = group_findings_by_category([cache_finding, secret_finding])
 
-    assert "[category=SECURITY | severity=CRITICAL | type=secret | detector=HardCoded]" in formatted
-    assert grouped[0][0] == "SECURITY"
-    assert grouped[1][0] == "EF"
+    assert formatted.startswith("[EF | SECURITY | CRITICAL] Hard-coded secret in workflow env 'TOKEN'")
+    assert grouped[0][0] == "EF"
 
     rendered_lines = []
     GASH.render_findings_report(rendered_lines.append, {"Cache": [cache_finding]})
+    assert any(line.startswith("[EF | PERFORMANCE | MEDIUM]") for line in rendered_lines)
     assert any("Cache issue, keep commas intact" in line for line in rendered_lines)

@@ -1,12 +1,16 @@
 import argparse
 import configparser
 import glob
-import readline
 import sys
 from os.path import abspath, dirname, expanduser, join
 from urllib.parse import urlparse
 import os
 import time
+
+try:
+    import readline
+except ImportError:
+    readline = None
 
 d = dirname(dirname(abspath(__file__)))
 sys.path.append(d)
@@ -20,6 +24,7 @@ from Analysis.Smells.Categories.Maintenance.Misconfiguration.MisconfigurationFct
 from Analysis.Smells.Categories.Maintenance.ShellScripts.ShellScriptsFct import ShellScriptsFct
 from Analysis.Smells.Categories.Performance.Cache.CacheFct import CacheFct
 from Analysis.Smells.Categories.Performance.ParallelJobs.ParallelJobsFct import ParallelJobsFct
+from Analysis.Smells.Categories.PipelineBehavior.PipelineBehaviorFct import PipelineBehaviorFct
 from Analysis.Smells.Categories.Quality.LongBlocks.LongBlockFct import LongBlockFct
 from Analysis.Smells.Categories.Security.AdminByDefault.AdminByDefaultFct import AdminByDefaultFct
 from Analysis.Smells.Categories.Security.HardCoded.HardCodedFct import HardCodedFct
@@ -62,6 +67,14 @@ def complete_path(text, state):
     return [x for x in glob.glob(text + '*')][state]
 
 
+def enable_path_completion():
+    if readline is None:
+        return
+    readline.set_completer_delims(' \t\n;')
+    readline.parse_and_bind("tab: complete")
+    readline.set_completer(complete_path)
+
+
 class GASH:
     def __init__(self, token):
         self.token = token
@@ -87,7 +100,8 @@ class GASH:
             'RemoteRun': RemoteRunFct(workflow),
             'SudoUsage': SudoUsageFct(workflow),
             'UnsecureProtocol': UnsecureProtocolFct(workflow),
-            'UntrustedDependencies': UntrustedDependenciesFct(workflow, token)
+            'UntrustedDependencies': UntrustedDependenciesFct(workflow, token),
+            'PipelineBehavior': PipelineBehaviorFct(workflow),
         }
 
     def collect_detector_findings(self):
@@ -107,7 +121,7 @@ class GASH:
 
             if findings:
                 for finding in findings:
-                    write_line(f"- {format_finding(finding)}")
+                    write_line(format_finding(finding))
             else:
                 write_line("No findings detected.")
 
@@ -123,7 +137,7 @@ class GASH:
         for category, findings in group_findings_by_category(all_findings):
             write_line(f"Category {category}:")
             for finding in findings:
-                write_line(f"- {format_finding(finding, include_detector=True)}")
+                write_line(format_finding(finding, include_detector=True))
 
     def main(self):
         parser = argparse.ArgumentParser(
@@ -273,9 +287,7 @@ class GASH:
             url_column = args.url
 
             if _file is None or url_column is None:
-                readline.set_completer_delims(' \t\n;')
-                readline.parse_and_bind("tab: complete")
-                readline.set_completer(complete_path)
+                enable_path_completion()
                 _file = input('Please provide a csv file path: ')
                 url_column = input('Please provide a column number that contains the URLs: ')
 
@@ -291,9 +303,7 @@ class GASH:
             _file = args.file
 
             if not _file:
-                readline.set_completer_delims(' \t\n;')
-                readline.parse_and_bind("tab: complete")
-                readline.set_completer(complete_path)
+                enable_path_completion()
                 _file = input("Please enter the path to the GitHub Actions file: ")
 
             print(f"Analyzing GitHub Actions file: {_file}")

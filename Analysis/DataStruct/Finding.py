@@ -12,8 +12,16 @@ class Finding:
     message: str
     severity: str
     category: str
+    subcategory: str = "GENERAL"
     finding_type: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def level(self):
+        """
+        Taxonomy-facing alias for severity.
+        """
+        return self.severity
 
     def __str__(self):
         """
@@ -30,6 +38,7 @@ class Finding:
                 and self.message == other.message
                 and self.severity == other.severity
                 and self.category == other.category
+                and self.subcategory == other.subcategory
                 and self.finding_type == other.finding_type
                 and self.metadata == other.metadata
             )
@@ -40,7 +49,9 @@ class Finding:
             "detector": self.detector,
             "message": self.message,
             "severity": self.severity,
+            "level": self.level,
             "category": self.category,
+            "subcategory": self.subcategory,
         }
         if self.finding_type is not None:
             payload["type"] = self.finding_type

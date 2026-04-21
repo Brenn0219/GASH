@@ -4,28 +4,33 @@ from Analysis.DataStruct.Finding import Finding
 
 
 DETECTOR_DEFAULTS = {
-    "CodeReplica": {"severity": "LOW", "category": "SMELL"},
-    "ErrorHandling": {"severity": "MEDIUM", "category": "SMELL"},
-    "ExtractEnvVars": {"severity": "LOW", "category": "EF"},
-    "MatrixSimplification": {"severity": "LOW", "category": "EF"},
-    "Misconfiguration": {"severity": "MEDIUM", "category": "SMELL"},
-    "ShellScripts": {"severity": "LOW", "category": "EF"},
-    "Cache": {"severity": "MEDIUM", "category": "EF"},
-    "ParallelJobs": {"severity": "MEDIUM", "category": "EF"},
-    "LongBlock": {"severity": "LOW", "category": "SMELL"},
-    "AdminByDefault": {"severity": "CRITICAL", "category": "SECURITY"},
-    "HardCoded": {"severity": "LOW", "category": "SMELL", "finding_type": "generic"},
-    "RemoteRun": {"severity": "CRITICAL", "category": "SECURITY"},
-    "SudoUsage": {"severity": "MEDIUM", "category": "EF"},
-    "UnsecureProtocol": {"severity": "CRITICAL", "category": "SECURITY"},
-    "UntrustedDependencies": {"severity": "CRITICAL", "category": "SECURITY"},
+    "CodeReplica": {"severity": "LOW", "category": "SMELL", "subcategory": "MAINTAINABILITY"},
+    "ErrorHandling": {"severity": "MEDIUM", "category": "SMELL", "subcategory": "MAINTAINABILITY"},
+    "ExtractEnvVars": {"severity": "LOW", "category": "EF", "subcategory": "MAINTAINABILITY"},
+    "MatrixSimplification": {"severity": "LOW", "category": "EF", "subcategory": "MAINTAINABILITY"},
+    "Misconfiguration": {"severity": "MEDIUM", "category": "SMELL", "subcategory": "MAINTAINABILITY"},
+    "ShellScripts": {"severity": "LOW", "category": "EF", "subcategory": "MAINTAINABILITY"},
+    "Cache": {"severity": "MEDIUM", "category": "EF", "subcategory": "PERFORMANCE"},
+    "ParallelJobs": {"severity": "MEDIUM", "category": "EF", "subcategory": "PERFORMANCE"},
+    "LongBlock": {"severity": "LOW", "category": "SMELL", "subcategory": "MAINTAINABILITY"},
+    "AdminByDefault": {"severity": "CRITICAL", "category": "EF", "subcategory": "SECURITY"},
+    "HardCoded": {
+        "severity": "LOW",
+        "category": "SMELL",
+        "subcategory": "MAINTAINABILITY",
+        "finding_type": "generic",
+    },
+    "RemoteRun": {"severity": "CRITICAL", "category": "EF", "subcategory": "SECURITY"},
+    "SudoUsage": {"severity": "MEDIUM", "category": "EF", "subcategory": "SECURITY"},
+    "UnsecureProtocol": {"severity": "CRITICAL", "category": "EF", "subcategory": "SECURITY"},
+    "UntrustedDependencies": {"severity": "CRITICAL", "category": "EF", "subcategory": "SECURITY"},
+    "PipelineBehavior": {"severity": "LOW", "category": "PB", "subcategory": "BUILD_PROCESS_ORGANIZATION"},
 }
 
 CATEGORY_ORDER = {
-    "SECURITY": 0,
-    "EF": 1,
+    "EF": 0,
+    "PB": 1,
     "SMELL": 2,
-    "PB": 3,
 }
 
 
@@ -33,25 +38,32 @@ def build_finding(
     detector,
     message,
     severity=None,
+    level=None,
     category=None,
+    subcategory=None,
     finding_type=None,
     metadata=None,
 ):
     defaults = DETECTOR_DEFAULTS.get(detector, {})
     resolved_type = finding_type if finding_type is not None else defaults.get("finding_type")
 
-    resolved_severity = severity if severity is not None else defaults.get("severity", "LOW")
+    resolved_severity = level if level is not None else severity
+    if resolved_severity is None:
+        resolved_severity = defaults.get("severity", "LOW")
     resolved_category = category if category is not None else defaults.get("category", "SMELL")
+    resolved_subcategory = subcategory if subcategory is not None else defaults.get("subcategory", "GENERAL")
 
     if detector == "HardCoded" and resolved_type == "secret":
         resolved_severity = "CRITICAL"
-        resolved_category = "SECURITY"
+        resolved_category = "EF"
+        resolved_subcategory = "SECURITY"
 
     return Finding(
         detector=detector,
         message=str(message),
         severity=resolved_severity,
         category=resolved_category,
+        subcategory=resolved_subcategory,
         finding_type=resolved_type,
         metadata=metadata or {},
     )
@@ -67,6 +79,7 @@ def normalize_findings(detector, raw_findings):
                     message=raw_finding.message,
                     severity=raw_finding.severity,
                     category=raw_finding.category,
+                    subcategory=getattr(raw_finding, "subcategory", None),
                     finding_type=raw_finding.finding_type,
                     metadata=raw_finding.metadata,
                 )
@@ -77,12 +90,8 @@ def normalize_findings(detector, raw_findings):
 
 
 def format_finding(finding, include_detector=False):
-    labels = [f"category={finding.category}", f"severity={finding.severity}"]
-    if finding.finding_type is not None:
-        labels.append(f"type={finding.finding_type}")
-    if include_detector:
-        labels.append(f"detector={finding.detector}")
-    return f"[{' | '.join(labels)}] {finding.message}"
+    label = f"[{finding.category} | {finding.subcategory} | {finding.level}]"
+    return f"{label} {finding.message}"
 
 
 def group_findings_by_category(findings):
