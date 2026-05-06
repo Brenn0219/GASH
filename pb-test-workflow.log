@@ -1,0 +1,146 @@
+ 
+Findings for CodeReplica in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+No findings detected.
+
+Findings for ErrorHandling in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'build_and_test' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout source' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install system dependencies' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install Node dependencies' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install Python dependencies' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Run mixed validation and build flow' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'experimental_matrix' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout source' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Setup Python' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install dependencies' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Run tests' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'docs' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout source' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Generate docs' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'nightly_security_scan' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout source' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Run security scan' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'manual_release' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout source' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Package release' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Publish release' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'deploy' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout source' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Deploy application' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+
+Findings for ExtractEnvVars in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+No findings detected.
+
+Findings for MatrixSimplification in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+No findings detected.
+
+Findings for Misconfiguration in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+[SMELL | MAINTAINABILITY | MEDIUM] No 'defaults' values were set on the workflow. Consider using the 'defaults' parameter to set the common values for all your jobs.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'build_and_test' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'experimental_matrix' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'docs' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'nightly_security_scan' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'manual_release' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'deploy' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+
+Findings for ShellScripts in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+[EF | MAINTAINABILITY | LOW] The step 'Run mixed validation and build flow' in job 'build_and_test' has 17 shell lines. Consider extracting this logic to a dedicated '.sh' file. Keeping long scripts inside YAML makes the workflow harder to read, review and reuse.
+
+Findings for Cache in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+[EF | PERFORMANCE | MEDIUM] Job 'build_and_test' installs npm dependencies in step 'Install Node dependencies' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'build_and_test' installs pip dependencies in step 'Install Python dependencies' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-python' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'experimental_matrix' installs pip dependencies in step 'Install dependencies' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-python' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'docs' installs npm dependencies in step 'Generate docs' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'nightly_security_scan' installs pip dependencies in step 'Run security scan' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-python' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'nightly_security_scan' installs npm dependencies in step 'Run security scan' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'manual_release' installs npm dependencies in step 'Package release' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' to avoid downloading the same dependencies on every run.
+
+Findings for ParallelJobs in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+[EF | PERFORMANCE | MEDIUM] Job 'experimental_matrix' waits for 'build_and_test' through 'needs', but no outputs, artifacts or result references were found. Consider removing this dependency so the jobs can run in parallel.
+[EF | PERFORMANCE | MEDIUM] Job 'docs' waits for 'build_and_test' through 'needs', but no outputs, artifacts or result references were found. Consider removing this dependency so the jobs can run in parallel.
+
+Findings for LongBlock in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+No findings detected.
+
+Findings for AdminByDefault in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+No findings detected.
+
+Findings for HardCoded in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+No findings detected.
+
+Findings for RemoteRun in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+[EF | SECURITY | CRITICAL] Invalid configuration for workflow_dispatch: expected a dictionary, but got NoneType. Ensure the workflow_dispatch configuration is properly defined.
+
+Findings for SudoUsage in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+No findings detected.
+
+Findings for UnsecureProtocol in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+No findings detected.
+
+Findings for UntrustedDependencies in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+No findings detected.
+
+Findings for PipelineBehavior in ../TCC/repositorios/.github/workflow\pb-test-workflow.yaml:
+[PB | BUILD_POLICY | LOW] Step 'Run mixed validation and build flow' in job 'build_and_test' appears to run non-critical or expensive work on every push/pull request without path or event guards. Consider conditional skips for contexts where that work is unnecessary.
+[PB | BUILD_POLICY | MEDIUM] Dependency installation policy for pip varies across the workflow (pip direct install, pip requirements install). Consider standardizing the install strategy across jobs.
+[PB | BUILD_POLICY | CRITICAL] Deploy-like job 'manual_release' has no explicit 'needs' dependency on available verification jobs [build_and_test, deploy, docs, experimental_matrix, nightly_security_scan]. Consider gating deployment on successful build/test jobs.
+[PB | DASHBOARD_NOTIFICATIONS | LOW] Step 'Run mixed validation and build flow' in job 'build_and_test' emits many echo lines. Consider grouping or condensing log output so important failures are easier to find.
+[PB | DASHBOARD_NOTIFICATIONS | INFO] Production or release-oriented jobs [deploy, manual_release] have no explicit notification channel. GitHub provides default notifications, but consider whether deployment stakeholders need a clearer result notification mechanism.
+[PB | BUILD_PROCESS_ORGANIZATION | MEDIUM] Job 'build_and_test' appears to validate before dependency setup. Consider checking the intended step order so install, build and test phases are easier to reason about.
+[PB | BUILD_PROCESS_ORGANIZATION | MEDIUM] Timeout-sensitive jobs [build_and_test, deploy, manual_release] do not define a job timeout. Consider an explicit timeout policy for long-running or deployment-oriented tasks.
+[PB | BUILD_PROCESS_ORGANIZATION | INFO] Workflow performs several network or package operations across jobs [build_and_test, deploy, docs, experimental_matrix, manual_release, nightly_security_scan] without visible retry policy. Consider retries only for clearly transient operations such as downloads.
+
+Findings by category:
+Category EF:
+[EF | MAINTAINABILITY | LOW] The step 'Run mixed validation and build flow' in job 'build_and_test' has 17 shell lines. Consider extracting this logic to a dedicated '.sh' file. Keeping long scripts inside YAML makes the workflow harder to read, review and reuse.
+[EF | PERFORMANCE | MEDIUM] Job 'build_and_test' installs npm dependencies in step 'Install Node dependencies' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'build_and_test' installs pip dependencies in step 'Install Python dependencies' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-python' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'experimental_matrix' installs pip dependencies in step 'Install dependencies' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-python' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'docs' installs npm dependencies in step 'Generate docs' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'nightly_security_scan' installs pip dependencies in step 'Run security scan' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-python' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'nightly_security_scan' installs npm dependencies in step 'Run security scan' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'manual_release' installs npm dependencies in step 'Package release' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'experimental_matrix' waits for 'build_and_test' through 'needs', but no outputs, artifacts or result references were found. Consider removing this dependency so the jobs can run in parallel.
+[EF | PERFORMANCE | MEDIUM] Job 'docs' waits for 'build_and_test' through 'needs', but no outputs, artifacts or result references were found. Consider removing this dependency so the jobs can run in parallel.
+[EF | SECURITY | CRITICAL] Invalid configuration for workflow_dispatch: expected a dictionary, but got NoneType. Ensure the workflow_dispatch configuration is properly defined.
+Category PB:
+[PB | BUILD_POLICY | LOW] Step 'Run mixed validation and build flow' in job 'build_and_test' appears to run non-critical or expensive work on every push/pull request without path or event guards. Consider conditional skips for contexts where that work is unnecessary.
+[PB | BUILD_POLICY | MEDIUM] Dependency installation policy for pip varies across the workflow (pip direct install, pip requirements install). Consider standardizing the install strategy across jobs.
+[PB | BUILD_POLICY | CRITICAL] Deploy-like job 'manual_release' has no explicit 'needs' dependency on available verification jobs [build_and_test, deploy, docs, experimental_matrix, nightly_security_scan]. Consider gating deployment on successful build/test jobs.
+[PB | DASHBOARD_NOTIFICATIONS | LOW] Step 'Run mixed validation and build flow' in job 'build_and_test' emits many echo lines. Consider grouping or condensing log output so important failures are easier to find.
+[PB | DASHBOARD_NOTIFICATIONS | INFO] Production or release-oriented jobs [deploy, manual_release] have no explicit notification channel. GitHub provides default notifications, but consider whether deployment stakeholders need a clearer result notification mechanism.
+[PB | BUILD_PROCESS_ORGANIZATION | MEDIUM] Job 'build_and_test' appears to validate before dependency setup. Consider checking the intended step order so install, build and test phases are easier to reason about.
+[PB | BUILD_PROCESS_ORGANIZATION | MEDIUM] Timeout-sensitive jobs [build_and_test, deploy, manual_release] do not define a job timeout. Consider an explicit timeout policy for long-running or deployment-oriented tasks.
+[PB | BUILD_PROCESS_ORGANIZATION | INFO] Workflow performs several network or package operations across jobs [build_and_test, deploy, docs, experimental_matrix, manual_release, nightly_security_scan] without visible retry policy. Consider retries only for clearly transient operations such as downloads.
+Category SMELL:
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'build_and_test' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout source' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install system dependencies' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install Node dependencies' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install Python dependencies' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Run mixed validation and build flow' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'experimental_matrix' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout source' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Setup Python' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install dependencies' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Run tests' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'docs' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout source' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Generate docs' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'nightly_security_scan' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout source' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Run security scan' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'manual_release' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout source' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Package release' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Publish release' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'deploy' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout source' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Deploy application' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] No 'defaults' values were set on the workflow. Consider using the 'defaults' parameter to set the common values for all your jobs.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'build_and_test' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'experimental_matrix' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'docs' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'nightly_security_scan' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'manual_release' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'deploy' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments

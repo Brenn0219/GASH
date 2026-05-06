@@ -1,0 +1,445 @@
+
+Findings for CodeReplica in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[SMELL | MAINTAINABILITY | LOW] Value 'us-east-1' is duplicated across contexts: Job 'lint' env variable 'REGION', Job 'test_matrix' env variable 'REGION', Job 'build' env variable 'REGION', Job 'package' env variable 'REGION'.
+[SMELL | MAINTAINABILITY | LOW] Value 'api.internal.local' is duplicated across contexts: Job 'lint' env variable 'DUPLICATED_HOST', Step 'Huge inline shell block' env variable 'DUPLICATED_HOST' in job 'lint', Job 'test_matrix' env variable 'DUPLICATED_HOST', Step 'Repeated giant script block' env variable 'DUPLICATED_HOST' in job 'test_matrix', Job 'build' env variable 'DUPLICATED_HOST', Step 'Long duplicated shell logic' env variable 'DUPLICATED_HOST' in job 'build', Job 'package' env variable 'DUPLICATED_HOST'.
+[SMELL | MAINTAINABILITY | LOW] Value 'http://service.local' is duplicated across contexts: Step 'Huge inline shell block' env variable 'SERVICE_URL' in job 'lint', Step 'Repeated giant script block' env variable 'SERVICE_URL' in job 'test_matrix', Step 'Long duplicated shell logic' env variable 'SERVICE_URL' in job 'build'.
+[SMELL | MAINTAINABILITY | LOW] Value 'http://internal-api.example.com' is duplicated across contexts: Job 'test_matrix' env variable 'API_URL', Job 'build' env variable 'API_URL'.
+
+Findings for ErrorHandling in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'lint' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout repository source code with an unnecessarily verbose step name' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Setup Node.js runtime with repeated literal version' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install dependencies in a bad way' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Huge inline shell block' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'test_matrix' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout repository source code with an unnecessarily verbose step name' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Setup Node.js runtime with repeated literal version' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install dependencies again without cache' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Repeated giant script block' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'build' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout repository source code with an unnecessarily verbose step name' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Untrusted third-party action' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install Go tools badly without cache' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Long duplicated shell logic' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'package' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Package app' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'docs' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Generate docs' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'deploy' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Deploy with exposed values' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+
+Findings for ExtractEnvVars in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[EF | MAINTAINABILITY | LOW] Value 'http://service.local' should be centralized using workflow.env or repository vars. Found in jobs [build, lint, test_matrix] across contexts: step 'Huge inline shell block' env 'SERVICE_URL' in job 'lint', step 'Long duplicated shell logic' env 'SERVICE_URL' in job 'build', step 'Repeated giant script block' env 'SERVICE_URL' in job 'test_matrix'.
+[EF | MAINTAINABILITY | LOW] Value 'http://service.local/health' should be centralized using workflow.env or repository vars. Found in jobs [build, lint, test_matrix] across contexts: step 'Huge inline shell block' run in job 'lint', step 'Long duplicated shell logic' run in job 'build', step 'Repeated giant script block' run in job 'test_matrix'.
+
+Findings for MatrixSimplification in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[EF | MAINTAINABILITY | LOW] The job 'test_matrix' matrix may be too complex because it expands to 24 job configurations, it uses 4 matrix axes, it relies on 6 include/exclude adjustments. Consider simplifying the matrix or moving exceptional cases to dedicated jobs to keep the workflow easier to maintain.
+
+Findings for Misconfiguration in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[SMELL | MAINTAINABILITY | MEDIUM] No 'defaults' values were set on the workflow. Consider using the 'defaults' parameter to set the common values for all your jobs.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'lint' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'test_matrix' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'build' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'package' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'docs' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+
+Findings for ShellScripts in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[EF | MAINTAINABILITY | LOW] The step 'Huge inline shell block' in job 'lint' has 39 shell lines. Consider extracting this logic to a dedicated '.sh' file. Keeping long scripts inside YAML makes the workflow harder to read, review and reuse.
+[EF | MAINTAINABILITY | LOW] The step 'Repeated giant script block' in job 'test_matrix' has 39 shell lines. Consider extracting this logic to a dedicated '.sh' file. Keeping long scripts inside YAML makes the workflow harder to read, review and reuse.
+[EF | MAINTAINABILITY | LOW] The step 'Long duplicated shell logic' in job 'build' has 39 shell lines. Consider extracting this logic to a dedicated '.sh' file. Keeping long scripts inside YAML makes the workflow harder to read, review and reuse.
+
+Findings for Cache in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[EF | PERFORMANCE | MEDIUM] Job 'lint' installs npm dependencies in step 'Install dependencies in a bad way' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'test_matrix' installs npm dependencies in step 'Install dependencies again without cache' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'build' installs go dependencies in step 'Install Go tools badly without cache' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-go' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'package' installs pip dependencies in step 'Package app' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-python' to avoid downloading the same dependencies on every run.
+
+Findings for ParallelJobs in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[EF | PERFORMANCE | MEDIUM] Job 'test_matrix' waits for 'lint' through 'needs', but no outputs, artifacts or result references were found. Consider removing this dependency so the jobs can run in parallel.
+[EF | PERFORMANCE | MEDIUM] Job 'build' waits for 'test_matrix' through 'needs', but no outputs, artifacts or result references were found. Consider removing this dependency so the jobs can run in parallel.
+[EF | PERFORMANCE | MEDIUM] Job 'package' waits for 'build' through 'needs', but no outputs, artifacts or result references were found. Consider removing this dependency so the jobs can run in parallel.
+[EF | PERFORMANCE | MEDIUM] Job 'docs' waits for 'build' through 'needs', but no outputs, artifacts or result references were found. Consider removing this dependency so the jobs can run in parallel.
+
+Findings for LongBlock in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[SMELL | MAINTAINABILITY | LOW] The step 'Huge inline shell block' run has more than 40 commands. Consider splitting the commands into multiple step groups. A longer step group can be difficult to maintain and debug and can lead to security vulnerabilities.
+[SMELL | MAINTAINABILITY | LOW] The step 'Repeated giant script block' run has more than 40 commands. Consider splitting the commands into multiple step groups. A longer step group can be difficult to maintain and debug and can lead to security vulnerabilities.
+[SMELL | MAINTAINABILITY | LOW] The step 'Long duplicated shell logic' run has more than 40 commands. Consider splitting the commands into multiple step groups. A longer step group can be difficult to maintain and debug and can lead to security vulnerabilities.
+
+Findings for AdminByDefault in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[EF | SECURITY | CRITICAL] Elevated permission found at workflow: contents = write. Review and apply least-privilege principle.
+[EF | SECURITY | CRITICAL] Elevated permission found at workflow: actions = write. Review and apply least-privilege principle.
+[EF | SECURITY | CRITICAL] Elevated permission found at workflow: checks = write. Review and apply least-privilege principle.
+
+Findings for HardCoded in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[SMELL | MAINTAINABILITY | LOW] Hard-coded value in workflow env 'AWS_ACCESS_KEY_ID'
+[SMELL | MAINTAINABILITY | LOW] Hard-coded value in workflow env 'AWS_SECRET_ACCESS_KEY'
+[EF | SECURITY | CRITICAL] Hard-coded secret in workflow env 'SLACK_TOKEN'
+[EF | SECURITY | CRITICAL] Hard-coded secret in workflow env 'GH_PAT'
+[EF | SECURITY | CRITICAL] Hard-coded secret in job lint env 'API_TOKEN'
+[EF | SECURITY | CRITICAL] Hard-coded secret in step in job test_matrix env 'PASSWORD'
+[EF | SECURITY | CRITICAL] Hard-coded secret in job build env 'DOCKER_PASSWORD'
+[EF | SECURITY | CRITICAL] Hard-coded secret in step in job deploy env 'DEPLOY_PASSWORD'
+[EF | SECURITY | CRITICAL] Hard-coded secret in step in job deploy env 'API_KEY'
+
+Findings for RemoteRun in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[EF | SECURITY | CRITICAL] Invalid configuration for workflow_dispatch: expected a dictionary, but got NoneType. Ensure the workflow_dispatch configuration is properly defined.
+
+Findings for SudoUsage in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[EF | SECURITY | MEDIUM] Step 'Install dependencies in a bad way' in job 'lint' uses 'sudo npm install' on a GitHub-hosted Ubuntu runner. Consider removing 'sudo' for user-space package or workspace operations to keep the workflow safer and more predictable.
+[EF | SECURITY | MEDIUM] Step 'Install dependencies again without cache' in job 'test_matrix' uses 'sudo npm install' on a GitHub-hosted Ubuntu runner. Consider removing 'sudo' for user-space package or workspace operations to keep the workflow safer and more predictable.
+[EF | SECURITY | MEDIUM] Step 'Install Go tools badly without cache' in job 'build' uses 'sudo go install golang.org/x/tools/cmd/stringer@latest' on a GitHub-hosted Ubuntu runner. Consider removing 'sudo' for user-space package or workspace operations to keep the workflow safer and more predictable.
+[EF | SECURITY | MEDIUM] Step 'Package app' in job 'package' uses 'sudo pip install requests' on a GitHub-hosted Ubuntu runner. Consider removing 'sudo' for user-space package or workspace operations to keep the workflow safer and more predictable.
+
+Findings for UnsecureProtocol in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[EF | SECURITY | CRITICAL] Unsecure protocol found in workflow env 'API_URL': http://internal-api.example.com. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in workflow env 'DEPLOY_URL': http://deploy.example.com/hook. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job lint env 'SERVICE_URL': http://service.local. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job lint run command 'echo "starting lint"
+export NODE_ENV=ci
+export REGION=us-east-1
+export DUPLICATED_HOST=api.internal.local
+echo "host=$DUPLICATED_HOST"
+if [ -f package.json ]; then
+  echo "package found"
+else
+  echo "package missing"
+fi
+for i in 1 2 3 4 5; do
+  echo "loop $i"
+done
+if [ -d src ]; then
+  echo "src ok"
+fi
+while false; do
+  echo "never"
+done
+function say_hello() {
+  echo "hello"
+}
+say_hello
+trap 'echo fail' ERR
+echo "lint step 1"
+echo "lint step 2"
+echo "lint step 3"
+echo "lint step 4"
+echo "lint step 5"
+echo "lint step 6"
+echo "lint step 7"
+echo "lint step 8"
+echo "lint step 9"
+echo "lint step 10"
+echo "lint step 11"
+echo "lint step 12"
+curl http://service.local/health
+npm run lint || true
+echo "done lint"
+'. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in job test_matrix env 'API_URL': http://internal-api.example.com. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job test_matrix env 'SERVICE_URL': http://service.local. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job test_matrix run command 'echo "starting tests"
+export NODE_ENV=ci
+export REGION=us-east-1
+export DUPLICATED_HOST=api.internal.local
+echo "host=$DUPLICATED_HOST"
+if [ -f package.json ]; then
+  echo "package found"
+else
+  echo "package missing"
+fi
+for i in 1 2 3 4 5; do
+  echo "loop $i"
+done
+if [ -d src ]; then
+  echo "src ok"
+fi
+while false; do
+  echo "never"
+done
+function say_hello() {
+  echo "hello"
+}
+say_hello
+trap 'echo fail' ERR
+echo "test step 1"
+echo "test step 2"
+echo "test step 3"
+echo "test step 4"
+echo "test step 5"
+echo "test step 6"
+echo "test step 7"
+echo "test step 8"
+echo "test step 9"
+echo "test step 10"
+echo "test step 11"
+echo "test step 12"
+curl http://service.local/health
+npm test || true
+echo "done tests"
+'. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in job build env 'API_URL': http://internal-api.example.com. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job build env 'SERVICE_URL': http://service.local. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job build run command 'echo "starting build"
+export NODE_ENV=ci
+export REGION=us-east-1
+export DUPLICATED_HOST=api.internal.local
+echo "host=$DUPLICATED_HOST"
+if [ -f package.json ]; then
+  echo "package found"
+else
+  echo "package missing"
+fi
+for i in 1 2 3 4 5; do
+  echo "loop $i"
+done
+if [ -d src ]; then
+  echo "src ok"
+fi
+while false; do
+  echo "never"
+done
+function say_hello() {
+  echo "hello"
+}
+say_hello
+trap 'echo fail' ERR
+echo "build step 1"
+echo "build step 2"
+echo "build step 3"
+echo "build step 4"
+echo "build step 5"
+echo "build step 6"
+echo "build step 7"
+echo "build step 8"
+echo "build step 9"
+echo "build step 10"
+echo "build step 11"
+echo "build step 12"
+curl http://service.local/health
+echo "simulate build"
+echo "done build"
+'. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job deploy run command 'curl -X POST http://deploy.example.com/hook
+echo "deploying"'. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+
+Findings for UntrustedDependencies in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[EF | SECURITY | CRITICAL] Unverified dependency found in step in job build: some-random-dev/very-cool-action@main. Consider using actions from verified creators.
+
+Findings for PipelineBehavior in ../TCC/repositorios/.github/workflow\broken-mega-pipeline.yaml:
+[PB | BUILD_POLICY | MEDIUM] Workflow suppresses command failures in 2 shell steps across jobs [lint, test_matrix]. Consider revisiting how build success is determined so expected non-critical failures are documented and isolated.
+[PB | BUILD_POLICY | LOW] Step 'Huge inline shell block' in job 'lint' appears to run non-critical or expensive work on every push/pull request without path or event guards. Consider conditional skips for contexts where that work is unnecessary.
+[PB | BUILD_POLICY | INFO] Job 'test_matrix' matrix includes experimental or unstable-looking entries, but all permutations appear blocking. Consider whether those optional combinations should use an explicit continue-on-error policy.
+[PB | DASHBOARD_NOTIFICATIONS | LOW] Step 'Huge inline shell block' in job 'lint' has 39 shell lines, which can make build logs hard to scan. Consider clearer step names, log grouping, or moving verbose logic into scripts with focused output.
+[PB | DASHBOARD_NOTIFICATIONS | INFO] Production or release-oriented jobs [deploy] have no explicit notification channel. GitHub provides default notifications, but consider whether deployment stakeholders need a clearer result notification mechanism.
+[PB | BUILD_PROCESS_ORGANIZATION | MEDIUM] Job 'lint' appears to validate before dependency setup. Consider checking the intended step order so install, build and test phases are easier to reason about.
+[PB | BUILD_PROCESS_ORGANIZATION | MEDIUM] Workflow has a serial dependency chain of 5 jobs. Consider whether jobs or stages could be reorganized to separate policy gates from independent work.
+[PB | BUILD_PROCESS_ORGANIZATION | MEDIUM] Timeout-sensitive jobs [build, deploy, lint, package, test_matrix] do not define a job timeout. Consider an explicit timeout policy for long-running or deployment-oriented tasks.
+[PB | BUILD_PROCESS_ORGANIZATION | INFO] Workflow performs several network or package operations across jobs [build, deploy, lint, package, test_matrix] without visible retry policy. Consider retries only for clearly transient operations such as downloads.
+
+Findings by category:
+Category EF:
+[EF | MAINTAINABILITY | LOW] Value 'http://service.local' should be centralized using workflow.env or repository vars. Found in jobs [build, lint, test_matrix] across contexts: step 'Huge inline shell block' env 'SERVICE_URL' in job 'lint', step 'Long duplicated shell logic' env 'SERVICE_URL' in job 'build', step 'Repeated giant script block' env 'SERVICE_URL' in job 'test_matrix'.
+[EF | MAINTAINABILITY | LOW] Value 'http://service.local/health' should be centralized using workflow.env or repository vars. Found in jobs [build, lint, test_matrix] across contexts: step 'Huge inline shell block' run in job 'lint', step 'Long duplicated shell logic' run in job 'build', step 'Repeated giant script block' run in job 'test_matrix'.
+[EF | MAINTAINABILITY | LOW] The job 'test_matrix' matrix may be too complex because it expands to 24 job configurations, it uses 4 matrix axes, it relies on 6 include/exclude adjustments. Consider simplifying the matrix or moving exceptional cases to dedicated jobs to keep the workflow easier to maintain.
+[EF | MAINTAINABILITY | LOW] The step 'Huge inline shell block' in job 'lint' has 39 shell lines. Consider extracting this logic to a dedicated '.sh' file. Keeping long scripts inside YAML makes the workflow harder to read, review and reuse.
+[EF | MAINTAINABILITY | LOW] The step 'Repeated giant script block' in job 'test_matrix' has 39 shell lines. Consider extracting this logic to a dedicated '.sh' file. Keeping long scripts inside YAML makes the workflow harder to read, review and reuse.
+[EF | MAINTAINABILITY | LOW] The step 'Long duplicated shell logic' in job 'build' has 39 shell lines. Consider extracting this logic to a dedicated '.sh' file. Keeping long scripts inside YAML makes the workflow harder to read, review and reuse.
+[EF | PERFORMANCE | MEDIUM] Job 'lint' installs npm dependencies in step 'Install dependencies in a bad way' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'test_matrix' installs npm dependencies in step 'Install dependencies again without cache' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'build' installs go dependencies in step 'Install Go tools badly without cache' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-go' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'package' installs pip dependencies in step 'Package app' without a matching cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-python' to avoid downloading the same dependencies on every run.
+[EF | PERFORMANCE | MEDIUM] Job 'test_matrix' waits for 'lint' through 'needs', but no outputs, artifacts or result references were found. Consider removing this dependency so the jobs can run in parallel.
+[EF | PERFORMANCE | MEDIUM] Job 'build' waits for 'test_matrix' through 'needs', but no outputs, artifacts or result references were found. Consider removing this dependency so the jobs can run in parallel.
+[EF | PERFORMANCE | MEDIUM] Job 'package' waits for 'build' through 'needs', but no outputs, artifacts or result references were found. Consider removing this dependency so the jobs can run in parallel.
+[EF | PERFORMANCE | MEDIUM] Job 'docs' waits for 'build' through 'needs', but no outputs, artifacts or result references were found. Consider removing this dependency so the jobs can run in parallel.
+[EF | SECURITY | CRITICAL] Elevated permission found at workflow: contents = write. Review and apply least-privilege principle.
+[EF | SECURITY | CRITICAL] Elevated permission found at workflow: actions = write. Review and apply least-privilege principle.
+[EF | SECURITY | CRITICAL] Elevated permission found at workflow: checks = write. Review and apply least-privilege principle.
+[EF | SECURITY | CRITICAL] Hard-coded secret in workflow env 'SLACK_TOKEN'
+[EF | SECURITY | CRITICAL] Hard-coded secret in workflow env 'GH_PAT'
+[EF | SECURITY | CRITICAL] Hard-coded secret in job lint env 'API_TOKEN'
+[EF | SECURITY | CRITICAL] Hard-coded secret in step in job test_matrix env 'PASSWORD'
+[EF | SECURITY | CRITICAL] Hard-coded secret in job build env 'DOCKER_PASSWORD'
+[EF | SECURITY | CRITICAL] Hard-coded secret in step in job deploy env 'DEPLOY_PASSWORD'
+[EF | SECURITY | CRITICAL] Hard-coded secret in step in job deploy env 'API_KEY'
+[EF | SECURITY | CRITICAL] Invalid configuration for workflow_dispatch: expected a dictionary, but got NoneType. Ensure the workflow_dispatch configuration is properly defined.
+[EF | SECURITY | MEDIUM] Step 'Install dependencies in a bad way' in job 'lint' uses 'sudo npm install' on a GitHub-hosted Ubuntu runner. Consider removing 'sudo' for user-space package or workspace operations to keep the workflow safer and more predictable.
+[EF | SECURITY | MEDIUM] Step 'Install dependencies again without cache' in job 'test_matrix' uses 'sudo npm install' on a GitHub-hosted Ubuntu runner. Consider removing 'sudo' for user-space package or workspace operations to keep the workflow safer and more predictable.
+[EF | SECURITY | MEDIUM] Step 'Install Go tools badly without cache' in job 'build' uses 'sudo go install golang.org/x/tools/cmd/stringer@latest' on a GitHub-hosted Ubuntu runner. Consider removing 'sudo' for user-space package or workspace operations to keep the workflow safer and more predictable.
+[EF | SECURITY | MEDIUM] Step 'Package app' in job 'package' uses 'sudo pip install requests' on a GitHub-hosted Ubuntu runner. Consider removing 'sudo' for user-space package or workspace operations to keep the workflow safer and more predictable.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in workflow env 'API_URL': http://internal-api.example.com. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in workflow env 'DEPLOY_URL': http://deploy.example.com/hook. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job lint env 'SERVICE_URL': http://service.local. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job lint run command 'echo "starting lint"
+export NODE_ENV=ci
+export REGION=us-east-1
+export DUPLICATED_HOST=api.internal.local
+echo "host=$DUPLICATED_HOST"
+if [ -f package.json ]; then
+  echo "package found"
+else
+  echo "package missing"
+fi
+for i in 1 2 3 4 5; do
+  echo "loop $i"
+done
+if [ -d src ]; then
+  echo "src ok"
+fi
+while false; do
+  echo "never"
+done
+function say_hello() {
+  echo "hello"
+}
+say_hello
+trap 'echo fail' ERR
+echo "lint step 1"
+echo "lint step 2"
+echo "lint step 3"
+echo "lint step 4"
+echo "lint step 5"
+echo "lint step 6"
+echo "lint step 7"
+echo "lint step 8"
+echo "lint step 9"
+echo "lint step 10"
+echo "lint step 11"
+echo "lint step 12"
+curl http://service.local/health
+npm run lint || true
+echo "done lint"
+'. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in job test_matrix env 'API_URL': http://internal-api.example.com. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job test_matrix env 'SERVICE_URL': http://service.local. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job test_matrix run command 'echo "starting tests"
+export NODE_ENV=ci
+export REGION=us-east-1
+export DUPLICATED_HOST=api.internal.local
+echo "host=$DUPLICATED_HOST"
+if [ -f package.json ]; then
+  echo "package found"
+else
+  echo "package missing"
+fi
+for i in 1 2 3 4 5; do
+  echo "loop $i"
+done
+if [ -d src ]; then
+  echo "src ok"
+fi
+while false; do
+  echo "never"
+done
+function say_hello() {
+  echo "hello"
+}
+say_hello
+trap 'echo fail' ERR
+echo "test step 1"
+echo "test step 2"
+echo "test step 3"
+echo "test step 4"
+echo "test step 5"
+echo "test step 6"
+echo "test step 7"
+echo "test step 8"
+echo "test step 9"
+echo "test step 10"
+echo "test step 11"
+echo "test step 12"
+curl http://service.local/health
+npm test || true
+echo "done tests"
+'. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in job build env 'API_URL': http://internal-api.example.com. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job build env 'SERVICE_URL': http://service.local. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job build run command 'echo "starting build"
+export NODE_ENV=ci
+export REGION=us-east-1
+export DUPLICATED_HOST=api.internal.local
+echo "host=$DUPLICATED_HOST"
+if [ -f package.json ]; then
+  echo "package found"
+else
+  echo "package missing"
+fi
+for i in 1 2 3 4 5; do
+  echo "loop $i"
+done
+if [ -d src ]; then
+  echo "src ok"
+fi
+while false; do
+  echo "never"
+done
+function say_hello() {
+  echo "hello"
+}
+say_hello
+trap 'echo fail' ERR
+echo "build step 1"
+echo "build step 2"
+echo "build step 3"
+echo "build step 4"
+echo "build step 5"
+echo "build step 6"
+echo "build step 7"
+echo "build step 8"
+echo "build step 9"
+echo "build step 10"
+echo "build step 11"
+echo "build step 12"
+curl http://service.local/health
+echo "simulate build"
+echo "done build"
+'. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unsecure protocol found in step in job deploy run command 'curl -X POST http://deploy.example.com/hook
+echo "deploying"'. Try use HTTPS instead of HTTP. If you need to use HTTP please provide certain level of security.
+[EF | SECURITY | CRITICAL] Unverified dependency found in step in job build: some-random-dev/very-cool-action@main. Consider using actions from verified creators.
+Category PB:
+[PB | BUILD_POLICY | MEDIUM] Workflow suppresses command failures in 2 shell steps across jobs [lint, test_matrix]. Consider revisiting how build success is determined so expected non-critical failures are documented and isolated.
+[PB | BUILD_POLICY | LOW] Step 'Huge inline shell block' in job 'lint' appears to run non-critical or expensive work on every push/pull request without path or event guards. Consider conditional skips for contexts where that work is unnecessary.
+[PB | BUILD_POLICY | INFO] Job 'test_matrix' matrix includes experimental or unstable-looking entries, but all permutations appear blocking. Consider whether those optional combinations should use an explicit continue-on-error policy.
+[PB | DASHBOARD_NOTIFICATIONS | LOW] Step 'Huge inline shell block' in job 'lint' has 39 shell lines, which can make build logs hard to scan. Consider clearer step names, log grouping, or moving verbose logic into scripts with focused output.
+[PB | DASHBOARD_NOTIFICATIONS | INFO] Production or release-oriented jobs [deploy] have no explicit notification channel. GitHub provides default notifications, but consider whether deployment stakeholders need a clearer result notification mechanism.
+[PB | BUILD_PROCESS_ORGANIZATION | MEDIUM] Job 'lint' appears to validate before dependency setup. Consider checking the intended step order so install, build and test phases are easier to reason about.
+[PB | BUILD_PROCESS_ORGANIZATION | MEDIUM] Workflow has a serial dependency chain of 5 jobs. Consider whether jobs or stages could be reorganized to separate policy gates from independent work.
+[PB | BUILD_PROCESS_ORGANIZATION | MEDIUM] Timeout-sensitive jobs [build, deploy, lint, package, test_matrix] do not define a job timeout. Consider an explicit timeout policy for long-running or deployment-oriented tasks.
+[PB | BUILD_PROCESS_ORGANIZATION | INFO] Workflow performs several network or package operations across jobs [build, deploy, lint, package, test_matrix] without visible retry policy. Consider retries only for clearly transient operations such as downloads.
+Category SMELL:
+[SMELL | MAINTAINABILITY | LOW] Value 'us-east-1' is duplicated across contexts: Job 'lint' env variable 'REGION', Job 'test_matrix' env variable 'REGION', Job 'build' env variable 'REGION', Job 'package' env variable 'REGION'.
+[SMELL | MAINTAINABILITY | LOW] Value 'api.internal.local' is duplicated across contexts: Job 'lint' env variable 'DUPLICATED_HOST', Step 'Huge inline shell block' env variable 'DUPLICATED_HOST' in job 'lint', Job 'test_matrix' env variable 'DUPLICATED_HOST', Step 'Repeated giant script block' env variable 'DUPLICATED_HOST' in job 'test_matrix', Job 'build' env variable 'DUPLICATED_HOST', Step 'Long duplicated shell logic' env variable 'DUPLICATED_HOST' in job 'build', Job 'package' env variable 'DUPLICATED_HOST'.
+[SMELL | MAINTAINABILITY | LOW] Value 'http://service.local' is duplicated across contexts: Step 'Huge inline shell block' env variable 'SERVICE_URL' in job 'lint', Step 'Repeated giant script block' env variable 'SERVICE_URL' in job 'test_matrix', Step 'Long duplicated shell logic' env variable 'SERVICE_URL' in job 'build'.
+[SMELL | MAINTAINABILITY | LOW] Value 'http://internal-api.example.com' is duplicated across contexts: Job 'test_matrix' env variable 'API_URL', Job 'build' env variable 'API_URL'.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'lint' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout repository source code with an unnecessarily verbose step name' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Setup Node.js runtime with repeated literal version' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install dependencies in a bad way' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Huge inline shell block' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'test_matrix' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout repository source code with an unnecessarily verbose step name' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Setup Node.js runtime with repeated literal version' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install dependencies again without cache' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Repeated giant script block' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'build' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Checkout repository source code with an unnecessarily verbose step name' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Untrusted third-party action' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Install Go tools badly without cache' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Long duplicated shell logic' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'package' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Package app' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'docs' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Generate docs' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'deploy' does not have a timeout set. It is recommended to set a timeout for jobs to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] Step 'Deploy with exposed values' does not have a timeout set. It is recommended to set a timeout for steps to prevent them from running with the default value of 6 hours and consuming resources unnecessarily.
+[SMELL | MAINTAINABILITY | MEDIUM] No 'defaults' values were set on the workflow. Consider using the 'defaults' parameter to set the common values for all your jobs.
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'lint' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'test_matrix' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'build' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'package' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | MEDIUM] Job 'docs' has no 'environment' parameter set. Consider create environments for better security and maintenance. You can find all the info about it at https://docs.github.com/en/actions/deployment/targeting-different-environments
+[SMELL | MAINTAINABILITY | LOW] The step 'Huge inline shell block' run has more than 40 commands. Consider splitting the commands into multiple step groups. A longer step group can be difficult to maintain and debug and can lead to security vulnerabilities.
+[SMELL | MAINTAINABILITY | LOW] The step 'Repeated giant script block' run has more than 40 commands. Consider splitting the commands into multiple step groups. A longer step group can be difficult to maintain and debug and can lead to security vulnerabilities.
+[SMELL | MAINTAINABILITY | LOW] The step 'Long duplicated shell logic' run has more than 40 commands. Consider splitting the commands into multiple step groups. A longer step group can be difficult to maintain and debug and can lead to security vulnerabilities.
+[SMELL | MAINTAINABILITY | LOW] Hard-coded value in workflow env 'AWS_ACCESS_KEY_ID'
+[SMELL | MAINTAINABILITY | LOW] Hard-coded value in workflow env 'AWS_SECRET_ACCESS_KEY'
