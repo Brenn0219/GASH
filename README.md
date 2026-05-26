@@ -1,13 +1,39 @@
 # GASH - GitHub Actions Smells Hunter
 ## Overview
 
-GASH (GitHub Actions Smell Hunter) is a Python-based tool primarily devoted to identifying configuration smells in CI/CD pipelines deployed on GitHub Actions. It can parser YAML files describing CI/CD workflows looking at identifying the presence of configuration smells. Overall, GASH outputs a report containing which smells were found and their occurrences in the YAML file.
+GASH (GitHub Actions Smell Hunter) is a Python-based tool for analyzing GitHub Actions workflows through a quality taxonomy aligned with CI/CD restructuring studies. It parses YAML workflows and reports:
+
+- **EF findings**: extra-functional issues and improvement opportunities that preserve the overall pipeline behavior.
+- **PB findings**: pipeline-behavior recommendations that suggest policy, orchestration, or workflow-structure improvements.
+
+The project still uses the word *smell* for historical continuity, but runtime analysis is now centered on structured **findings** and **recommendations**.
 
 GASH can be used in two ways:
 
-YAML Analysis: Users can provide a path to a single YAML file or a directory of YAML files. GASH analyzes these files and outputs a report detailing the smells found and their locations. This is ideal for assessing the current pipeline configurations of a single project.
+YAML Analysis: Users can provide a path to a single YAML file or a directory of YAML files. GASH analyzes these files and outputs a report detailing the findings and recommendations found in the workflow. This is ideal for assessing the current pipeline configurations of a single project.
 
-Repository Analysis: Users can provide a GitHub repository URL or a CSV file of URLs. GASH downloads each repository, inspects commits that affect YAML files, and analyzes these files. It outputs a CSV report summarizing commit details (e.g., committer name, date, issue linkage) and detected smells (e.g., type, occurrences). This supports researchers in analyzing pipeline history across multiple projects.
+Repository Analysis: Users can provide a GitHub repository URL or a CSV file of URLs. GASH downloads each repository, inspects commits that affect YAML files, and analyzes these files. It outputs reports summarizing commit details and detected workflow findings. This supports researchers in analyzing pipeline history across multiple projects.
+
+## Taxonomy
+
+GASH reports findings using the following top-level categories:
+
+- **EF**: extra-functional findings such as maintainability, performance, and security problems.
+- **PB**: pipeline-behavior recommendations such as build policy, workflow organization, and infrastructure recommendations.
+
+Each finding is emitted with the structured prefix:
+
+```text
+[CATEGORY | SUBCATEGORY | LEVEL]
+```
+
+Examples:
+
+```text
+[EF | SECURITY | CRITICAL]
+[EF | PERFORMANCE | MEDIUM]
+[PB | BUILD_POLICY | LOW]
+```
 
 ## Usage
 GASH is used through a CLI with five options, covering both research and development scenarios.
@@ -17,8 +43,8 @@ GASH is used through a CLI with five options, covering both research and develop
 | **Group**   | **Option**          | **Description**                                                                         |
 |-------------|---------------------|-----------------------------------------------------------------------------------------|
 | Research    | `repo`              | Mines repositories based on a search idea, used when a specific repository is not identified. |
-|             | `commits`           | Analyzes a specific repository's commits for configuration smells.                      |
-|             | `batch-commits`     | Studies multiple repositories listed in a CSV file.                                     |
+|             | `commits`           | Analyzes a specific repository's commits for workflow findings.                         |
+|             | `batch-commit`      | Studies multiple repositories listed in a CSV file.                                     |
 | Analysis    | `analyze`           | Performs single mode analysis on a specific YAML file, providing the file path.         |
 |             | `batch-analyze`     | Analyzes multiple YAML files within a specified directory.                              |
 
@@ -41,6 +67,19 @@ After installing the requirements, run `GASH.py` in the terminal:
 ```bash
 python3 GASH.py
 ```
+
+### Analysis Filters and Formats
+
+The `analyze` and `batch-analyze` commands support:
+
+- `--format text|json`
+- `--category EF|PB`
+- `--subcategory <value>`
+- `--level CRITICAL|HIGH|MEDIUM|LOW|INFO`
+- `--detector <name>`
+- `--kind SMELL|RECOMMENDATION`
+
+This allows users to focus on critical EF findings, export JSON for downstream tooling, or inspect only PB recommendations.
 
 # GitHub Actions Syntax
 

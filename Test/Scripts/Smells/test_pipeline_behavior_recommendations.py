@@ -39,6 +39,7 @@ def test_pipeline_behavior_finding_metadata_and_prefix():
     assert deploy_finding.category == "PB"
     assert deploy_finding.subcategory == "BUILD_POLICY"
     assert deploy_finding.level == "CRITICAL"
+    assert deploy_finding.kind == "RECOMMENDATION"
     assert "Deploy-like job 'deploy'" in deploy_finding.message
     assert format_finding(deploy_finding).startswith("[PB | BUILD_POLICY | CRITICAL]")
 

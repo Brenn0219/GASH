@@ -10,7 +10,7 @@ from Analysis.Smells.Categories.Maintenance.ExtractEnvVars.ExtractEnvVarsFct imp
 from Analysis.Smells.Categories.Maintenance.Misconfiguration.MisconfigurationFct import MisconfigurationFct
 from Analysis.Smells.Categories.Security.HardCoded.HardCodedFct import HardCodedFct
 from GASH import GASH
-from Utils.FindingUtils import build_finding, format_finding, group_findings_by_category, normalize_findings
+from Utils.FindingUtils import build_finding, filter_findings, format_finding, group_findings_by_category, normalize_findings
 
 
 def parse_workflow(yaml_text):
@@ -49,7 +49,8 @@ def test_misconfiguration_accepts_uses_and_uses_with_steps():
     assert not any("Checkout" in message and "missing" in message for message in messages)
     assert not any("Setup Node" in message and "missing" in message for message in messages)
     assert all(finding.severity == "MEDIUM" for finding in findings)
-    assert all(finding.category == "SMELL" for finding in findings)
+    assert all(finding.category == "EF" for finding in findings)
+    assert all(finding.kind == "SMELL" for finding in findings)
 
 
 def test_hardcoded_classifies_secret_and_generic_findings():
@@ -85,7 +86,12 @@ def test_hardcoded_classifies_secret_and_generic_findings():
         and finding.subcategory == "SECURITY"
         for finding in secret_findings
     )
-    assert all(finding.severity == "LOW" and finding.category == "SMELL" for finding in generic_findings)
+    assert all(
+        finding.severity == "LOW"
+        and finding.category == "EF"
+        and finding.subcategory == "MAINTAINABILITY"
+        for finding in generic_findings
+    )
 
 
 def test_codereplica_and_extractenvvars_are_complementary():
@@ -116,7 +122,8 @@ def test_codereplica_and_extractenvvars_are_complementary():
 
     assert any("duplicated across contexts" in finding.message for finding in code_replica_findings)
     assert any("should be centralized using workflow.env or repository vars" in finding.message for finding in extract_env_findings)
-    assert all(finding.category == "SMELL" for finding in code_replica_findings)
+    assert all(finding.category == "EF" for finding in code_replica_findings)
+    assert all(finding.kind == "SMELL" for finding in code_replica_findings)
     assert all(finding.category == "EF" for finding in extract_env_findings)
 
 
@@ -129,6 +136,7 @@ def test_legacy_findings_are_normalized_with_metadata():
     assert findings[0].level == "MEDIUM"
     assert findings[0].category == "EF"
     assert findings[0].subcategory == "PERFORMANCE"
+    assert findings[0].kind == "SMELL"
 
 
 def test_rendered_output_keeps_metadata_and_grouping():
@@ -140,8 +148,29 @@ def test_rendered_output_keeps_metadata_and_grouping():
 
     assert formatted.startswith("[EF | SECURITY | CRITICAL] Hard-coded secret in workflow env 'TOKEN'")
     assert grouped[0][0] == "EF"
+    assert len(grouped) == 1
 
     rendered_lines = []
     GASH.render_findings_report(rendered_lines.append, {"Cache": [cache_finding]})
     assert any(line.startswith("[EF | PERFORMANCE | MEDIUM]") for line in rendered_lines)
     assert any("Cache issue, keep commas intact" in line for line in rendered_lines)
+
+
+def test_filters_and_json_payload_use_metadata_instead_of_string_matching():
+    findings = [
+        build_finding("Cache", "Cache finding"),
+        build_finding("PipelineBehavior", "PB finding", level="LOW", subcategory="BUILD_POLICY", kind="RECOMMENDATION"),
+    ]
+
+    filtered = filter_findings(findings, category="PB", kind="RECOMMENDATION")
+    detector_findings = {"Cache": [findings[0]], "PipelineBehavior": [findings[1]]}
+    payload = GASH.build_json_payload(
+        GASH.build_report_context(detector_findings, file_path="workflow.yml", filters={"category": ["PB"]})
+    )
+
+    assert len(filtered) == 1
+    assert filtered[0].category == "PB"
+    assert filtered[0].kind == "RECOMMENDATION"
+    assert payload["summary"]["by_category"]["EF"] == 1
+    assert payload["summary"]["by_category"]["PB"] == 1
+    assert payload["findings"][1]["kind"] == "RECOMMENDATION"

@@ -1,6 +1,7 @@
 import argparse
 import configparser
 import glob
+import json
 import sys
 from os.path import abspath, dirname, expanduser, join
 from urllib.parse import urlparse
@@ -16,27 +17,19 @@ d = dirname(dirname(abspath(__file__)))
 sys.path.append(d)
 
 from Analysis.Parse import ActionParser
-from Analysis.Smells.Categories.Maintenance.CodeReplica.CodeReplicaFct import CodeReplicaFct
-from Analysis.Smells.Categories.Maintenance.ErrorHandling.ErrorHandlingFct import ErrorHandlingFct
-from Analysis.Smells.Categories.Maintenance.ExtractEnvVars.ExtractEnvVarsFct import ExtractEnvVarsFct
-from Analysis.Smells.Categories.Maintenance.MatrixSimplification.MatrixSimplificationFct import MatrixSimplificationFct
-from Analysis.Smells.Categories.Maintenance.Misconfiguration.MisconfigurationFct import MisconfigurationFct
-from Analysis.Smells.Categories.Maintenance.ShellScripts.ShellScriptsFct import ShellScriptsFct
-from Analysis.Smells.Categories.Performance.Cache.CacheFct import CacheFct
-from Analysis.Smells.Categories.Performance.ParallelJobs.ParallelJobsFct import ParallelJobsFct
-from Analysis.Smells.Categories.PipelineBehavior.PipelineBehaviorFct import PipelineBehaviorFct
-from Analysis.Smells.Categories.Quality.LongBlocks.LongBlockFct import LongBlockFct
-from Analysis.Smells.Categories.Security.AdminByDefault.AdminByDefaultFct import AdminByDefaultFct
-from Analysis.Smells.Categories.Security.HardCoded.HardCodedFct import HardCodedFct
-from Analysis.Smells.Categories.Security.RemoteTriggers.RemoteTriggersFct import RemoteRunFct
-from Analysis.Smells.Categories.Security.SudoUsage.SudoUsageFct import SudoUsageFct
-from Analysis.Smells.Categories.Security.UnsecureProtocol.UnsecureProtocolFct import UnsecureProtocolFct
-from Analysis.Smells.Categories.Security.UntrustedDependencies.UntrustedDependenciesFct import UntrustedDependenciesFct
-
+from Analysis.Registry.DetectorRegistry import build_detectors
 from APIs import GitHub
 from Miner import Mining
 from Utils import Utilities
-from Utils.FindingUtils import format_finding, group_findings_by_category, normalize_findings
+from Utils.FindingUtils import (
+    filter_findings,
+    format_finding,
+    group_findings_by_subcategory,
+    normalize_findings,
+    serialize_findings,
+    sort_findings,
+    summarize_findings,
+)
 
 # Define the path to the configuration file in the user's home directory
 CONFIG_DIR = join(expanduser("~"), ".gash")
@@ -85,59 +78,153 @@ class GASH:
         self.detectors = {}
 
     def initialize_detectors(self, workflow, token):
-        self.detectors = {
-            'CodeReplica': CodeReplicaFct(workflow),
-            'ErrorHandling': ErrorHandlingFct(workflow),
-            'ExtractEnvVars': ExtractEnvVarsFct(workflow),
-            'MatrixSimplification': MatrixSimplificationFct(workflow),
-            'Misconfiguration': MisconfigurationFct(workflow),
-            'ShellScripts': ShellScriptsFct(workflow),
-            'Cache': CacheFct(workflow),
-            'ParallelJobs': ParallelJobsFct(workflow),
-            'LongBlock': LongBlockFct(workflow),
-            'AdminByDefault': AdminByDefaultFct(workflow),
-            'HardCoded': HardCodedFct(workflow),
-            'RemoteRun': RemoteRunFct(workflow),
-            'SudoUsage': SudoUsageFct(workflow),
-            'UnsecureProtocol': UnsecureProtocolFct(workflow),
-            'UntrustedDependencies': UntrustedDependenciesFct(workflow, token),
-            'PipelineBehavior': PipelineBehaviorFct(workflow),
-        }
+        self.detectors = build_detectors(workflow, token)
 
-    def collect_detector_findings(self):
+    def collect_detector_findings(self, filters=None):
         detector_findings = {}
         for detector_name, detector in self.detectors.items():
             findings = detector.detect()
-            detector_findings[detector_name] = normalize_findings(detector_name, findings)
+            normalized = normalize_findings(detector_name, findings)
+            detector_findings[detector_name] = self.apply_filters(normalized, filters)
         return detector_findings
 
     @staticmethod
-    def render_findings_report(write_line, detector_findings, file_path=None):
-        for detector_name, findings in detector_findings.items():
-            header = f"\nFindings for {detector_name}:"
-            if file_path is not None:
-                header = f"\nFindings for {detector_name} in {file_path}:"
-            write_line(header)
+    def apply_filters(findings, filters=None):
+        if not filters:
+            return sort_findings(findings)
 
-            if findings:
-                for finding in findings:
-                    write_line(format_finding(finding))
-            else:
-                write_line("No findings detected.")
+        return filter_findings(
+            findings,
+            category=filters.get("category"),
+            subcategory=filters.get("subcategory"),
+            level=filters.get("level"),
+            detector=filters.get("detector"),
+            kind=filters.get("kind"),
+        )
 
+    @staticmethod
+    def collect_all_findings(detector_findings):
         all_findings = []
         for findings in detector_findings.values():
             all_findings.extend(findings)
+        return sort_findings(all_findings)
 
-        write_line("\nFindings by category:")
-        if not all_findings:
-            write_line("No findings detected.")
+    @staticmethod
+    def build_report_context(detector_findings, file_path=None, filters=None):
+        all_findings = GASH.collect_all_findings(detector_findings)
+        critical_findings = [finding for finding in all_findings if finding.level == "CRITICAL"]
+        ef_findings = [finding for finding in all_findings if finding.category == "EF"]
+        pb_findings = [finding for finding in all_findings if finding.category == "PB"]
+
+        return {
+            "file_path": file_path,
+            "filters": {key: value for key, value in (filters or {}).items() if value},
+            "summary": summarize_findings(all_findings),
+            "critical_findings": critical_findings,
+            "findings_by_category": {
+                "EF": group_findings_by_subcategory(ef_findings),
+                "PB": group_findings_by_subcategory(pb_findings),
+            },
+            "detector_findings": detector_findings,
+            "all_findings": all_findings,
+        }
+
+    @staticmethod
+    def build_json_payload(report_context):
+        return {
+            "file_path": report_context["file_path"],
+            "filters": report_context["filters"],
+            "summary": report_context["summary"],
+            "critical_findings": serialize_findings(report_context["critical_findings"]),
+            "categories": {
+                category: {
+                    subcategory: serialize_findings(findings)
+                    for subcategory, findings in grouped_findings
+                }
+                for category, grouped_findings in report_context["findings_by_category"].items()
+            },
+            "findings": serialize_findings(report_context["all_findings"]),
+            "detectors": {
+                detector: serialize_findings(findings)
+                for detector, findings in report_context["detector_findings"].items()
+            },
+        }
+
+    @staticmethod
+    def render_findings_report(write_line, detector_findings, file_path=None, filters=None):
+        report_context = GASH.build_report_context(detector_findings, file_path=file_path, filters=filters)
+        summary = report_context["summary"]
+
+        if file_path is not None:
+            write_line(f"Analysis for {file_path}")
+
+        if report_context["filters"]:
+            applied = ", ".join(
+                f"{key}={value}" for key, value in sorted(report_context["filters"].items())
+            )
+            write_line(f"Applied filters: {applied}")
+
+        write_line(
+            f"Summary: {summary['total']} findings | "
+            f"EF={summary['by_category'].get('EF', 0)} | "
+            f"PB={summary['by_category'].get('PB', 0)} | "
+            f"CRITICAL={summary['by_level'].get('CRITICAL', 0)}"
+        )
+
+        write_line("")
+        write_line("Critical Findings:")
+        if report_context["critical_findings"]:
+            for finding in report_context["critical_findings"]:
+                write_line(format_finding(finding))
+        else:
+            write_line("No critical findings detected.")
+
+        GASH.render_category_section(
+            write_line,
+            "EF Findings",
+            report_context["findings_by_category"]["EF"],
+            empty_message="No EF findings detected.",
+        )
+        GASH.render_category_section(
+            write_line,
+            "PB Recommendations",
+            report_context["findings_by_category"]["PB"],
+            empty_message="No PB recommendations detected.",
+        )
+
+    @staticmethod
+    def render_category_section(write_line, title, grouped_findings, empty_message):
+        write_line("")
+        write_line(f"{title}:")
+        if not grouped_findings:
+            write_line(empty_message)
             return
 
-        for category, findings in group_findings_by_category(all_findings):
-            write_line(f"Category {category}:")
+        for subcategory, findings in grouped_findings:
+            write_line(f"{subcategory}:")
             for finding in findings:
-                write_line(format_finding(finding, include_detector=True))
+                write_line(format_finding(finding))
+
+    @staticmethod
+    def extract_filters_from_args(args):
+        return {
+            "category": getattr(args, "category", None),
+            "subcategory": getattr(args, "subcategory", None),
+            "level": getattr(args, "level", None),
+            "detector": getattr(args, "detector", None),
+            "kind": getattr(args, "kind", None),
+        }
+
+    @staticmethod
+    def write_analysis_output(write_line, detector_findings, output_format="text", file_path=None, filters=None):
+        if output_format == "json":
+            payload = GASH.build_json_payload(
+                GASH.build_report_context(detector_findings, file_path=file_path, filters=filters)
+            )
+            write_line(json.dumps(payload, indent=2))
+            return
+
+        GASH.render_findings_report(write_line, detector_findings, file_path=file_path, filters=filters)
 
     def main(self):
         parser = argparse.ArgumentParser(
@@ -180,19 +267,51 @@ class GASH:
         # Subcommand for analyzing smells
         parser_analyze = subparsers.add_parser(
             'analyze',
-            help='--file: File Path Analyze GitHub Actions file for smells.',
+            help='--file: File Path Analyze GitHub Actions file for findings.',
 
-            description='Analyze GitHub Actions file for smells.'
+            description='Analyze GitHub Actions file for findings.'
         )
         parser_analyze.add_argument('--file', type=str, help='GitHub Actions file path to analyze.')
+        parser_analyze.add_argument('--format', choices=['text', 'json'], default='text', help='Output format.')
+        parser_analyze.add_argument('--category', action='append', choices=['EF', 'PB'], help='Filter by finding category.')
+        parser_analyze.add_argument('--subcategory', action='append', help='Filter by finding subcategory.')
+        parser_analyze.add_argument(
+            '--level',
+            action='append',
+            choices=['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'],
+            help='Filter by finding level.',
+        )
+        parser_analyze.add_argument('--detector', action='append', help='Filter by detector name.')
+        parser_analyze.add_argument(
+            '--kind',
+            action='append',
+            choices=['SMELL', 'RECOMMENDATION'],
+            help='Filter by finding kind.',
+        )
 
         parser_batch_analyze = subparsers.add_parser(
             'batch-analyze',
-            help='--dir: Directory Path, Analyze all GitHub Actions files for smells in a specific directory.',
-            description='Analyze all GitHub Actions files in the specified directory for smells.'
+            help='--dir: Directory Path, Analyze all GitHub Actions files for findings in a specific directory.',
+            description='Analyze all GitHub Actions files in the specified directory for findings.'
         )
         parser_batch_analyze.add_argument('--dir', type=str,
                                           help='Directory path containing GitHub Actions files to analyze.')
+        parser_batch_analyze.add_argument('--format', choices=['text', 'json'], default='text', help='Output format.')
+        parser_batch_analyze.add_argument('--category', action='append', choices=['EF', 'PB'], help='Filter by finding category.')
+        parser_batch_analyze.add_argument('--subcategory', action='append', help='Filter by finding subcategory.')
+        parser_batch_analyze.add_argument(
+            '--level',
+            action='append',
+            choices=['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'],
+            help='Filter by finding level.',
+        )
+        parser_batch_analyze.add_argument('--detector', action='append', help='Filter by detector name.')
+        parser_batch_analyze.add_argument(
+            '--kind',
+            action='append',
+            choices=['SMELL', 'RECOMMENDATION'],
+            help='Filter by finding kind.',
+        )
 
         parser.add_argument('-d', '--daemon', action='store_true', help='Run as a daemon in the background')
 
@@ -301,6 +420,7 @@ class GASH:
 
         elif args.command == 'analyze':
             _file = args.file
+            filters = self.extract_filters_from_args(args)
 
             if not _file:
                 enable_path_completion()
@@ -311,11 +431,18 @@ class GASH:
             workflow = action.prepare_for_analysis()
 
             self.initialize_detectors(workflow, _token)
-            detector_findings = self.collect_detector_findings()
-            self.render_findings_report(print, detector_findings)
+            detector_findings = self.collect_detector_findings(filters=filters)
+            self.write_analysis_output(
+                print,
+                detector_findings,
+                output_format=args.format,
+                file_path=_file,
+                filters=filters,
+            )
 
         elif args.command == 'batch-analyze':
             _dir = args.dir
+            filters = self.extract_filters_from_args(args)
 
             repo_dirs = glob.glob(_dir, recursive=True)
 
@@ -338,7 +465,8 @@ class GASH:
 
                 for file_path in yaml_files:
                     file_root, file_ext = os.path.splitext(os.path.basename(file_path))
-                    log_file_path = os.path.join(analysis_dir, f'{file_root}.log')
+                    output_extension = 'json' if args.format == 'json' else 'log'
+                    log_file_path = os.path.join(analysis_dir, f'{file_root}.{output_extension}')
                     print(f"Analyzing GitHub Actions file: {file_path}\n")
                     with open(log_file_path, 'w') as log_file:
                         action = self.parser.Action(file_path=file_path)
@@ -368,7 +496,10 @@ class GASH:
                                 while detection_attempts < 5:
                                     try:
                                         findings = detector.detect()
-                                        detector_findings[detector_name] = normalize_findings(detector_name, findings)
+                                        detector_findings[detector_name] = self.apply_filters(
+                                            normalize_findings(detector_name, findings),
+                                            filters,
+                                        )
                                         break
                                     except Exception as e:
                                         print(f"Error detecting with {detector_name}: {e}")
@@ -386,10 +517,12 @@ class GASH:
                                             findings = []
                                             detector_findings[detector_name] = []
 
-                            self.render_findings_report(
+                            self.write_analysis_output(
                                 lambda line: log_file.write(f"{line}\n"),
                                 detector_findings,
+                                output_format=args.format,
                                 file_path=file_path,
+                                filters=filters,
                             )
 
                     print(f"Analysis complete for {file_path}.\n"

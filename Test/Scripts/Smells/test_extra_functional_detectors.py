@@ -44,13 +44,12 @@ def test_extract_env_vars_detection():
     )
 
     findings = ExtractEnvVarsFct(workflow).detect()
-
-    expected = [
-        "Value 'https://api.example.com' should be centralized using workflow.env or repository vars. "
-        "Found in jobs [build, test] across contexts: job 'build' env 'API_URL', job 'test' env 'API_URL'."
-    ]
-
-    assert findings == expected
+    assert len(findings) == 1
+    assert findings[0].category == "EF"
+    assert findings[0].subcategory == "MAINTAINABILITY"
+    assert findings[0].kind == "SMELL"
+    assert "https://api.example.com" in findings[0].message
+    assert "workflow.env or repository vars" in findings[0].message
 
 
 def test_matrix_simplification_detection():
@@ -73,14 +72,11 @@ def test_matrix_simplification_detection():
     )
 
     findings = MatrixSimplificationFct(workflow).detect()
-
-    expected = [
-        "The job 'test' matrix may be too complex because it expands to 12 job configurations. "
-        "Consider simplifying the matrix or moving exceptional cases to dedicated jobs to keep "
-        "the workflow easier to maintain."
-    ]
-
-    assert findings == expected
+    assert len(findings) == 1
+    assert findings[0].category == "EF"
+    assert findings[0].subcategory == "MAINTAINABILITY"
+    assert findings[0].level == "LOW"
+    assert "expands to 12 job configurations" in findings[0].message
 
 
 def test_shell_scripts_detection():
@@ -100,14 +96,12 @@ def test_shell_scripts_detection():
     )
 
     findings = ShellScriptsFct(workflow).detect()
-
-    expected = [
-        "The step 'Bootstrap' in job 'build' has 21 shell lines. Consider extracting this logic "
-        "to a dedicated '.sh' file. Keeping long scripts inside YAML makes the workflow harder "
-        "to read, review and reuse."
-    ]
-
-    assert findings == expected
+    assert len(findings) == 1
+    assert findings[0].category == "EF"
+    assert findings[0].subcategory == "MAINTAINABILITY"
+    assert findings[0].kind == "SMELL"
+    assert "Bootstrap" in findings[0].message
+    assert "21 shell lines" in findings[0].message
 
 
 def test_cache_detection():
@@ -129,14 +123,12 @@ def test_cache_detection():
     )
 
     findings = CacheFct(workflow).detect()
-
-    expected = [
-        "Job 'build' installs npm dependencies in step 'Install dependencies' without a matching "
-        "cache step. Consider using 'actions/cache' or enabling cache in 'actions/setup-node' "
-        "to avoid downloading the same dependencies on every run."
-    ]
-
-    assert findings == expected
+    assert len(findings) == 1
+    assert findings[0].category == "EF"
+    assert findings[0].subcategory == "PERFORMANCE"
+    assert findings[0].level == "MEDIUM"
+    assert "Install dependencies" in findings[0].message
+    assert "actions/setup-node" in findings[0].message
 
 
 def test_parallel_jobs_detection():
@@ -160,13 +152,10 @@ def test_parallel_jobs_detection():
     )
 
     findings = ParallelJobsFct(workflow).detect()
-
-    expected = [
-        "Job 'lint' waits for 'build' through 'needs', but no outputs, artifacts or result references "
-        "were found. Consider removing this dependency so the jobs can run in parallel."
-    ]
-
-    assert findings == expected
+    assert len(findings) == 1
+    assert findings[0].category == "EF"
+    assert findings[0].subcategory == "PERFORMANCE"
+    assert "Job 'lint' waits for 'build'" in findings[0].message
 
 
 def test_parallel_jobs_skip_when_outputs_are_consumed():
@@ -211,14 +200,11 @@ def test_sudo_usage_detection():
     )
 
     findings = SudoUsageFct(workflow).detect()
-
-    expected = [
-        "Step 'Install CLI' in job 'build' uses 'sudo npm install -g eslint' on a GitHub-hosted "
-        "Ubuntu runner. Consider removing 'sudo' for user-space package or workspace operations "
-        "to keep the workflow safer and more predictable."
-    ]
-
-    assert findings == expected
+    assert len(findings) == 1
+    assert findings[0].category == "EF"
+    assert findings[0].subcategory == "SECURITY"
+    assert findings[0].level == "MEDIUM"
+    assert "sudo npm install -g eslint" in findings[0].message
 
 
 def test_sudo_usage_ignores_system_package_install():
@@ -261,13 +247,12 @@ def test_hardcoded_detects_clear_text_secret_in_env_and_with():
     )
 
     findings = HardCodedFct(workflow).detect()
-
-    expected = [
-        "Hard-coded secret in workflow env 'AWS_ACCESS_KEY_ID'",
-        "Hard-coded secret in step 'Publish' parameter 'token' in job 'deploy'",
-    ]
-
-    assert findings == expected
+    assert len(findings) == 2
+    assert all(finding.category == "EF" for finding in findings)
+    assert all(finding.subcategory == "SECURITY" for finding in findings)
+    assert all(finding.level == "CRITICAL" for finding in findings)
+    assert any("AWS_ACCESS_KEY_ID" in finding.message for finding in findings)
+    assert any("parameter 'token'" in finding.message for finding in findings)
 
 
 def test_hardcoded_ignores_secret_references():

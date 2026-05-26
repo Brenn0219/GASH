@@ -13,6 +13,7 @@ class Finding:
     severity: str
     category: str
     subcategory: str = "GENERAL"
+    kind: str = "SMELL"
     finding_type: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
 
@@ -39,6 +40,7 @@ class Finding:
                 and self.severity == other.severity
                 and self.category == other.category
                 and self.subcategory == other.subcategory
+                and self.kind == other.kind
                 and self.finding_type == other.finding_type
                 and self.metadata == other.metadata
             )
@@ -52,6 +54,7 @@ class Finding:
             "level": self.level,
             "category": self.category,
             "subcategory": self.subcategory,
+            "kind": self.kind,
         }
         if self.finding_type is not None:
             payload["type"] = self.finding_type
